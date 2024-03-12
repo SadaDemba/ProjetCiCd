@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+  mongodb:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app_network
+
+# only for admin use in order to access directly databases 
+#  adminer:
+#    restart: always
+#    image: adminer
+#    ports:
+#    - "8080:8080"
+
+  flaskapp:
+    build:
+      context: ./user-service
+    container_name: flaskapp
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+    networks:
+      - app_network
+
+  expressapp:
+    build: ./order-service
+    container_name: expressapp
+    ports:
+      - "3002:3002"
+  reactapp:
+    build: ./front-end-react
+    container_name: reactapp
+    ports:
+      - "3000:3000"
+    networks:
+      - app_network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  app_network:
+    driver: bridge
+

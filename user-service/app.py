@@ -6,7 +6,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Connect to MongoDB
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient('mongodb://root:admin@mongodb:27017/')
 db = client['userdb']
 collection = db['user']
 
@@ -26,4 +26,4 @@ def create_user():
     return jsonify({'message': f'User created with ID: {result.inserted_id}'})
 
 if __name__ == '__main__':
-    app.run(port=3001)
+    app.run(debug=True, host='0.0.0.0', port=3001)
