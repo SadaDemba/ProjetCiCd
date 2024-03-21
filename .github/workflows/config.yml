@@ -45,7 +45,7 @@ jobs:
           docker push sadademba/project-cicd-2024:user-service-${GITHUB_RUN_ID}
 
   build-and-push-versioned:
-    if: startsWith(github.ref, 'refs/heads/v')
+    if: github.ref =~ '^refs/heads/[0-9]+\.[0-9]+\.[0-9]+$'
     runs-on: ubuntu-latest
 
     strategy:
