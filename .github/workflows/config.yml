@@ -5,12 +5,6 @@ on:
     branches:
       - main
 
-  create:
-    branches:
-      - /^(\d+\.\d+\.\d+)$/
-
-      
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -43,42 +37,3 @@ jobs:
           docker build -t user-service ./user-service
           docker tag user-service sadademba/project-cicd-2024:user-service-${GITHUB_RUN_ID}
           docker push sadademba/project-cicd-2024:user-service-${GITHUB_RUN_ID}
-
-  build-and-push-version:
-      runs-on: ubuntu-latest
-      if: startsWith(github.ref, 'refs/heads/')  # Trigger job only if the pushed branch is a version tag
-  
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
-  
-        # Authenticate with DockerHub using access token
-        - name: Login to DockerHub
-          run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login -u sadademba --password-stdin
-
-          
-        # Extract version from branch name
-        - name: Set version
-          run: |
-            echo "VERSION=${{ github.ref }}" >> $GITHUB_ENV
-  
-        # Build and push frontend image with version tag
-        - name: Build and push frontend image with version tag
-          run: |
-            docker build -t frontend ./front-end-react
-            docker tag frontend sadademba/project-cicd-2024:frontend-${VERSION}
-            docker push sadademba/project-cicd-2024:frontend-${VERSION}
-  
-        # Build and push order-service image with version tag
-        - name: Build and push order-service image with version tag
-          run: |
-            docker build -t order-service ./order-service
-            docker tag order-service sadademba/project-cicd-2024:order-service-${VERSION}
-            docker push sadademba/project-cicd-2024:order-service-${VERSION}
-  
-        # Build and push user-service image with version tag
-        - name: Build and push user-service image with version tag
-          run: |
-            docker build -t user-service ./user-service
-            docker tag user-service sadademba/project-cicd-2024:user-service-${VERSION}
-            docker push sadademba/project-cicd-2024:user-service-${VERSION}
