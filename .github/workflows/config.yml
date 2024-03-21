@@ -15,7 +15,7 @@ jobs:
 
       # Authenticate with DockerHub using access token
       - name: Login to DockerHub
-        run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login -u sadademba --password-stdin
 
       # Build and push frontend image
       - name: Build and push frontend image
