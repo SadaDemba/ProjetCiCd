@@ -1,13 +1,18 @@
-name: Build and Push
+name: CI/CD
 
 on:
   push:
     branches:
       - main
+      - '*.*.*' # Match branches with version number format
 
 jobs:
-  build-and-push:
+  build-and-push-main:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        pipeline: [main]
 
     steps:
       - name: Checkout code
@@ -37,3 +42,44 @@ jobs:
           docker build -t user-service ./user-service
           docker tag user-service sadademba/project-cicd-2024:user-service-${GITHUB_RUN_ID}
           docker push sadademba/project-cicd-2024:user-service-${GITHUB_RUN_ID}
+
+  build-and-push-versioned:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        pipeline: [versioned]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Authenticate with DockerHub using access token
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login -u sadademba --password-stdin
+
+      # Extract version from branch name
+      - name: Extract version from branch
+        id: extract_version
+        run: echo "::set-output name=version::${GITHUB_REF##*/}"
+
+      # Build and push frontend image with version tag
+      - name: Build and push frontend image
+        run: |
+          docker build -t frontend ./front-end-react
+          docker tag frontend sadademba/project-cicd-2024:frontend-${{ steps.extract_version.outputs.version }}
+          docker push sadademba/project-cicd-2024:frontend-${{ steps.extract_version.outputs.version }}
+
+      # Build and push order-service image with version tag
+      - name: Build and push order-service image
+        run: |
+          docker build -t order-service ./order-service
+          docker tag order-service sadademba/project-cicd-2024:order-service-${{ steps.extract_version.outputs.version }}
+          docker push sadademba/project-cicd-2024:order-service-${{ steps.extract_version.outputs.version }}
+
+      # Build and push user-service image with version tag
+      - name: Build and push user-service image
+        run: |
+          docker build -t user-service ./user-service
+          docker tag user-service sadademba/project-cicd-2024:user-service-${{ steps.extract_version.outputs.version }}
+          docker push sadademba/project-cicd-2024:user-service-${{ steps.extract_version.outputs.version }}
