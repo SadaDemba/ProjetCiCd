@@ -43,7 +43,7 @@ jobs:
 
   build-and-push-version:
       runs-on: ubuntu-latest
-      if: startsWith(github.ref, 'refs/tags/v')  # Trigger job only if the pushed branch is a version tag
+      if: startsWith(github.ref, 'refs/head/')  # Trigger job only if the pushed branch is a version tag
   
       steps:
         - name: Checkout code
@@ -52,11 +52,12 @@ jobs:
         # Authenticate with DockerHub using access token
         - name: Login to DockerHub
           run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login -u sadademba --password-stdin
-  
-        # Extract version from tag name
+
+          
+        # Extract version from branch name
         - name: Set version
           run: |
-            VERSION=$(echo "${{ github.ref }}" | sed 's/refs\/tags\/v//')
+            VERSION=$(echo "${{ github.ref }}" | sed 's/refs\/heads\///')
             echo "::set-env name=VERSION::${VERSION}"
   
         # Build and push frontend image with version tag
