@@ -8,6 +8,7 @@ on:
 
 jobs:
   build-and-push-main:
+    if: github.ref == 'refs/heads/main' # Déclenché uniquement pour la branche main
     runs-on: ubuntu-latest
 
     strategy:
@@ -44,6 +45,7 @@ jobs:
           docker push sadademba/project-cicd-2024:user-service-${GITHUB_RUN_ID}
 
   build-and-push-versioned:
+    if: matches(github.ref, 'refs/heads/[0-9]+\.[0-9]+\.[0-9]+')
     runs-on: ubuntu-latest
 
     strategy:
