@@ -19,6 +19,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Utilisez une image Docker multi-architecture pour la construction
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
       # Authenticate with DockerHub using access token
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login -u sadademba --password-stdin
@@ -26,21 +32,21 @@ jobs:
       # Build and push frontend image
       - name: Build and push frontend image
         run: |
-          docker build -t frontend ./front-end-react
+          docker buildx build --platform linux/amd64,linux/arm64 -t frontend ./front-end-react
           docker tag frontend sadademba/project-cicd-2024:frontend-${GITHUB_RUN_ID}
           docker push sadademba/project-cicd-2024:frontend-${GITHUB_RUN_ID}
 
       # Build and push order-service image
       - name: Build and push order-service image
         run: |
-          docker build -t order-service ./order-service
+          docker buildx build --platform linux/amd64,linux/arm64 -t order-service ./order-service
           docker tag order-service sadademba/project-cicd-2024:order-service-${GITHUB_RUN_ID}
           docker push sadademba/project-cicd-2024:order-service-${GITHUB_RUN_ID}
 
       # Build and push user-service image
       - name: Build and push user-service image
         run: |
-          docker build -t user-service ./user-service
+          docker buildx build --platform linux/amd64,linux/arm64 -t user-service ./user-service
           docker tag user-service sadademba/project-cicd-2024:user-service-${GITHUB_RUN_ID}
           docker push sadademba/project-cicd-2024:user-service-${GITHUB_RUN_ID}
 
@@ -56,6 +62,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+         # Utilisez une image Docker multi-architecture pour la construction
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+
       # Authenticate with DockerHub using access token
       - name: Login to DockerHub
         run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login -u sadademba --password-stdin
@@ -68,20 +81,20 @@ jobs:
       # Build and push frontend image with version tag
       - name: Build and push frontend image
         run: |
-          docker build -t frontend ./front-end-react
+          docker buildx build --platform linux/amd64,linux/arm64 -t frontend ./front-end-react
           docker tag frontend sadademba/project-cicd-2024:frontend-${{ steps.extract_version.outputs.version }}
           docker push sadademba/project-cicd-2024:frontend-${{ steps.extract_version.outputs.version }}
 
       # Build and push order-service image with version tag
       - name: Build and push order-service image
         run: |
-          docker build -t order-service ./order-service
+          docker buildx build --platform linux/amd64,linux/arm64 -t order-service ./order-service
           docker tag order-service sadademba/project-cicd-2024:order-service-${{ steps.extract_version.outputs.version }}
           docker push sadademba/project-cicd-2024:order-service-${{ steps.extract_version.outputs.version }}
 
       # Build and push user-service image with version tag
       - name: Build and push user-service image
         run: |
-          docker build -t user-service ./user-service
+          docker buildx build --platform linux/amd64,linux/arm64 -t user-service ./user-service
           docker tag user-service sadademba/project-cicd-2024:user-service-${{ steps.extract_version.outputs.version }}
           docker push sadademba/project-cicd-2024:user-service-${{ steps.extract_version.outputs.version }}
