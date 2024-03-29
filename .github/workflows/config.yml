@@ -32,9 +32,9 @@ jobs:
       # Build and push frontend image
       - name: Build and push frontend image
         run: |
-          docker buildx build --platform linux/amd64,linux/arm64 -t frontend ./front-end-react
-          docker tag frontend sadademba/project-cicd-2024:frontend-${GITHUB_RUN_ID}
-          docker push sadademba/project-cicd-2024:frontend-${GITHUB_RUN_ID}
+          docker buildx build --platform linux/amd64,linux/arm64 -t sadademba/project-cicd-2024:frontend-${GITHUB_RUN_ID} ./front-end-react --push
+
+
 
       # Build and push order-service image
       - name: Build and push order-service image
