@@ -39,16 +39,12 @@ jobs:
       # Build and push order-service image
       - name: Build and push order-service image
         run: |
-          docker buildx build --platform linux/amd64,linux/arm64 -t order-service ./order-service
-          docker tag order-service sadademba/project-cicd-2024:order-service-${GITHUB_RUN_ID}
-          docker push sadademba/project-cicd-2024:order-service-${GITHUB_RUN_ID}
-
+          docker buildx build --platform linux/amd64,linux/arm64 -t sadademba/project-cicd-2024:order-service-${GITHUB_RUN_ID} ./order-service --push
+          
       # Build and push user-service image
       - name: Build and push user-service image
         run: |
-          docker buildx build --platform linux/amd64,linux/arm64 -t user-service ./user-service
-          docker tag user-service sadademba/project-cicd-2024:user-service-${GITHUB_RUN_ID}
-          docker push sadademba/project-cicd-2024:user-service-${GITHUB_RUN_ID}
+          docker buildx build --platform linux/amd64,linux/arm64 -t sadademba/project-cicd-2024:user-service-${GITHUB_RUN_ID} ./user-service --push
 
   build-and-push-versioned:
     if: startsWith(github.ref, 'refs/heads/') && contains(github.ref, '.')
@@ -81,20 +77,14 @@ jobs:
       # Build and push frontend image with version tag
       - name: Build and push frontend image
         run: |
-          docker buildx build --platform linux/amd64,linux/arm64 -t frontend ./front-end-react
-          docker tag frontend sadademba/project-cicd-2024:frontend-${{ steps.extract_version.outputs.version }}
-          docker push sadademba/project-cicd-2024:frontend-${{ steps.extract_version.outputs.version }}
+          docker buildx build --platform linux/amd64,linux/arm64 -t sadademba/project-cicd-2024:frontend-${{ steps.extract_version.outputs.version }} ./front-end-react --push
 
       # Build and push order-service image with version tag
       - name: Build and push order-service image
         run: |
-          docker buildx build --platform linux/amd64,linux/arm64 -t order-service ./order-service
-          docker tag order-service sadademba/project-cicd-2024:order-service-${{ steps.extract_version.outputs.version }}
-          docker push sadademba/project-cicd-2024:order-service-${{ steps.extract_version.outputs.version }}
+          docker buildx build --platform linux/amd64,linux/arm64 -t sadademba/project-cicd-2024:order-service-${{ steps.extract_version.outputs.version }} ./order-service --push
 
       # Build and push user-service image with version tag
       - name: Build and push user-service image
         run: |
-          docker buildx build --platform linux/amd64,linux/arm64 -t user-service ./user-service
-          docker tag user-service sadademba/project-cicd-2024:user-service-${{ steps.extract_version.outputs.version }}
-          docker push sadademba/project-cicd-2024:user-service-${{ steps.extract_version.outputs.version }}
+          docker buildx build --platform linux/amd64,linux/arm64 -t sadademba/project-cicd-2024:user-service-${{ steps.extract_version.outputs.version }} ./user-service --push
