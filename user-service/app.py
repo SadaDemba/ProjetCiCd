@@ -10,6 +10,12 @@ client = MongoClient('mongodb://root:admin@mongodb:27017/')
 db = client['userdb']
 collection = db['user']
 
+@app.route('/test', methods=['GET'])
+def test_user_data():
+    # Fetch all user data from MongoDB
+    
+    return jsonify({'message':'Test test'})
+
 @app.route('/user', methods=['GET'])
 def get_user_data():
     # Fetch all user data from MongoDB
