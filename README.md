@@ -13,9 +13,22 @@ Vous travaillez sur le déploiement d'une application composée de microservices
      - `user-service` pour le service utilisateur,
      - `mongo-service` pour la base de données MongoDB.
 
+**1.1 Solution :**
+   - Clonez le dépôt contenant les sources de votre application de microservices.
+   - Accéder au repertoire de chaque service, installer les dependances puis lancer le serveur.
+   - Tester l'application.
+     
+
 **2. Dockerization :**
    - Rédigez des fichiers Dockerfile pour chacun des trois services développés.
    - Assurez-vous que les images construites sont stockées dans un repository privé. Vous pouvez utiliser votre compte privé DockerHub pour cela.
+
+**2.1 Solution :**
+   - Dans cette partie il faut vous assurer que vous avez docker installé en local sur votre machine.
+   - Creer les fichiers dockerfile pour chacun des service dans leurs répertoires respectifs.
+   - Creer le fichier docker-compose à la racine du projet que nous allons utiliser pour executer nos services.
+   - Se mettre dans le repertoire racine et taper la commande `docker-compose up `
+   - Tester à nouveau l'application.
 
 **3. Mise en place du Pipeline CI :**
    - Utilisez votre outil CI préféré pour mettre en place un pipeline qui construit les images de chaque service à partir des Dockerfiles.
