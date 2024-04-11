@@ -23,6 +23,12 @@ def get_user_data():
     user_data = list(cursor)
     return jsonify(user_data)
 
+@app.route('/test', methods=['GET'])
+def test_user_data():
+    # Fetch all user data from MongoDB
+    
+    return jsonify({'message':'Test test'})
+
 @app.route('/user', methods=['POST'])
 def create_user():
     # Create a user and persist it in MongoDB

@@ -1,0 +1,90 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - '*.*.*' # Match branches with version number format
+
+jobs:
+  build-and-push-main:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        pipeline: [main]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Utilisez une image Docker multi-architecture pour la construction
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      # Authenticate with DockerHub using access token
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login -u sadademba --password-stdin
+
+      # Build and push frontend image
+      - name: Build and push frontend image
+        run: |
+          docker buildx build --platform linux/amd64,linux/arm64 -t sadademba/project-cicd-2024:frontend-${GITHUB_RUN_ID} ./front-end-react --push
+
+
+
+      # Build and push order-service image
+      - name: Build and push order-service image
+        run: |
+          docker buildx build --platform linux/amd64,linux/arm64 -t sadademba/project-cicd-2024:order-service-${GITHUB_RUN_ID} ./order-service --push
+          
+      # Build and push user-service image
+      - name: Build and push user-service image
+        run: |
+          docker buildx build --platform linux/amd64,linux/arm64 -t sadademba/project-cicd-2024:user-service-${GITHUB_RUN_ID} ./user-service --push
+
+  build-and-push-versioned:
+    if: startsWith(github.ref, 'refs/heads/') && contains(github.ref, '.')
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        pipeline: [versioned]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+         # Utilisez une image Docker multi-architecture pour la construction
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+
+      # Authenticate with DockerHub using access token
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login -u sadademba --password-stdin
+
+      # Extract version from branch name
+      - name: Extract version from branch
+        id: extract_version
+        run: echo "::set-output name=version::${GITHUB_REF##*/}"
+
+      # Build and push frontend image with version tag
+      - name: Build and push frontend image
+        run: |
+          docker buildx build --platform linux/amd64,linux/arm64 -t sadademba/project-cicd-2024:frontend-${{ steps.extract_version.outputs.version }} ./front-end-react --push
+
+      # Build and push order-service image with version tag
+      - name: Build and push order-service image
+        run: |
+          docker buildx build --platform linux/amd64,linux/arm64 -t sadademba/project-cicd-2024:order-service-${{ steps.extract_version.outputs.version }} ./order-service --push
+
+      # Build and push user-service image with version tag
+      - name: Build and push user-service image
+        run: |
+          docker buildx build --platform linux/amd64,linux/arm64 -t sadademba/project-cicd-2024:user-service-${{ steps.extract_version.outputs.version }} ./user-service --push
