@@ -119,4 +119,4 @@ Lien vers l'énoncé `https://github.com/mpakoupete/cicd-project.git`.
    configurations actuelles du repos j'ai choisi la première car les utilisateurs sur mac m3 sont largement minoritaires. Pour tester sur mac m3 il faudra simplement changer, sur le frontend, 
    l'url permettant daccéder aux services en y ajoutant le numero de port.
 
-Le tour étant joué, vous pouvez maintenant tester votre application.
+Le tour étant joué, vous pouvez maintenant tester votre application avec `localhost:30000`.
