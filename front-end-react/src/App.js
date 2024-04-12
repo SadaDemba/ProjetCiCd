@@ -8,7 +8,7 @@ const App = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch('http://api.microapp-deploy.com:3005/user/user');
+      const response = await fetch('api.microapp-deploy.com/user/user');
       const data = await response.json();
       setUserData(data);
     } catch (error) {
@@ -18,7 +18,7 @@ const App = () => {
 
   const fetchOrderData = async () => {
     try {
-      const response = await fetch('http://api.microapp-deploy.com:3005/order/order');
+      const response = await fetch('api.microapp-deploy.com/order/order');
       const data = await response.json();
       setOrderData(data.message);
     } catch (error) {
@@ -34,7 +34,7 @@ const App = () => {
     }
 
     try {
-      const response = await fetch('http://api.microapp-deploy.com:3005/user/user', {
+      const response = await fetch('api.microapp-deploy.com/user/user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
